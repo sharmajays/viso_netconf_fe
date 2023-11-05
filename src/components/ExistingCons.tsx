@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { staticIp, ipAddress } from "../types/common";
 
 const ExistingCons = () => {
@@ -84,12 +84,24 @@ const ExistingCons = () => {
     }
   }
 
+  const activateDHCP=async()=>{
+    try{
+      await axios.post(
+        "http://192.168.1.81:3000/dhcp/activateDhcp"
+      )
+    }
+    catch(e){
+      alert("FAILED TO ACTIVATE DHCP")
+    }
+  }
+
   useEffect(()=>{
     fetchConNames()
   })
 
   return (
   <>
+
   <h4>Set Static IP</h4>
   <select onChange={handleChange1}>
     {
@@ -98,8 +110,8 @@ const ExistingCons = () => {
   </select><br/>
   <button onClick={setNetwork}>Set Network</button>
 
+  <h4>Add Static IP</h4>
   <form onSubmit={addNetwork}> 
-    <h4>Add Static IP</h4>
     Enter Name: <input type="string" name="con_name" value={addConnameAndSubnet.con_name} onChange={handleAddConnameAndSubnet}></input><br/>
     Enter Subnet Mask: <input type="number" name="subnet_mask" value={addConnameAndSubnet.subnet_mask} min={0} max={24} onChange={handleAddConnameAndSubnet}></input><br/>
     Enter Static IP: <input type="number" min={10} max={299} name="network_id_1" value={staticIp.network_id_1} onChange={handleStaticIp}></input>
@@ -112,6 +124,10 @@ const ExistingCons = () => {
     <input type="number" min={0} max={299} name="host_id" value={gatewayIp.host_id} onChange={handleGatewayIp}></input><br/>
     <button type="submit" onClick={addNetwork}>Add Network</button>
   </form>
+
+  <h4>Set DHCP</h4>
+  <button onClick={activateDHCP}>Activate DHCP</button>
+
   </>
   );
 };
